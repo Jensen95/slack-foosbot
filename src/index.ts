@@ -10,9 +10,9 @@ import {
   asyncShortcutResponse,
   helloMessage,
   otherMessages,
-  addHistoryImportHandlers,
   noopAckHandler,
 } from "./handlers/index";
+import { handlerService } from "./handlerService";
 
 export default {
   async fetch(
@@ -24,7 +24,6 @@ export default {
       // when the pattern matches, the framework automatically acknowledges the request
       .event("app_mention", appMention)
       .message("Hello", helloMessage)
-      .event("message", otherMessages)
       .action(
         "button-action",
         noopAckHandler, // complete this within 3 seconds
@@ -51,8 +50,10 @@ export default {
         ackModalSubmission,
         asyncModalResponse
       );
-    addHistoryImportHandlers(app);
-
-    return await app.run(request, ctx);
+    return await handlerService
+      .applyHandlersToApp(app)
+      // Message event is a catch all an should be at the end
+      .event("message", otherMessages)
+      .run(request, ctx);
   },
 };

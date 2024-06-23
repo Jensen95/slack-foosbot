@@ -5,6 +5,7 @@ import {
   ViewSubmissionAckHandler,
   ViewSubmissionLazyHandler,
 } from "slack-cloudflare-workers";
+import { handlerService } from "../handlerService";
 
 const importHistory: ShortcutLazyHandler = async ({ context, payload }) => {
   await context.client.views.open({
@@ -69,7 +70,7 @@ const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
   });
 };
 
-export const addHistoryImportHandlers = (app: SlackApp<any>) => {
+const addHistoryImportHandlers = (app: SlackApp<any>) => {
   app.shortcut("import_history", ackShortcut, importHistory);
   app.viewSubmission(
     "import_history_modal",
@@ -77,3 +78,13 @@ export const addHistoryImportHandlers = (app: SlackApp<any>) => {
     asyncModalResponse
   );
 };
+
+handlerService.addHandler(addHistoryImportHandlers);
+handlerService.addManifestItem([
+  {
+    name: "Import match history",
+    type: "global",
+    callbackId: "import_history",
+    description: "Import match history",
+  },
+]);
