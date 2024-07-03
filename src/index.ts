@@ -13,14 +13,21 @@ import {
   noopAckHandler,
 } from "./handlers/index";
 import { handlerService } from "./handlerService";
+import { prismaClientService } from "./prismaClientService";
 
+export interface Env {
+  DB: D1Database;
+}
+
+export type SlackAppEnv = SlackEdgeAppEnv & Env;
 export default {
   async fetch(
     request: Request,
-    env: SlackEdgeAppEnv,
+    env: SlackAppEnv,
     ctx: ExecutionContext
   ): Promise<Response> {
-    const app = new SlackApp({ env })
+    prismaClientService.initialize(env.DB);
+    const app = new SlackApp<SlackAppEnv>({ env })
       // when the pattern matches, the framework automatically acknowledges the request
       .event("app_mention", appMention)
       .message("Hello", helloMessage)

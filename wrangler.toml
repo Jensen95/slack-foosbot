@@ -1,3 +1,8 @@
 name = "slack-foosbot"
 main = "src/index.ts"
 compatibility_date = "2024-06-21"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "slack-foosbot"
+database_id = "8ae85c98-eb24-438b-be1d-f93c242a5f8a"

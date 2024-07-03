@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String   @id @default(cuid())
+  initials  String
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  name      String?
+  elo       Int
+  updatedAt DateTime @updatedAt
+  matches   Match[]
+  trueSkill TrueSkill
+}
+
+model Match {
+  id        String   @id @default(cuid())
+  winnerId  String
+  looserId  String
+  players   Player[] @relation()
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  timestamp DateTime @default(now())
+}
+
+model Channel {
+  id      String   @id
+  teamId  String  @unique
+  matches Match[]
+  players Player[]
+}

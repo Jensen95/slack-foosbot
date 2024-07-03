@@ -6,6 +6,14 @@ import {
   ViewSubmissionLazyHandler,
 } from "slack-cloudflare-workers";
 import { handlerService } from "../handlerService";
+import { prismaClientService } from "../prismaClientService";
+import {
+  NEW_PLAYER_COMMAND,
+  NEW_PLAYER_REGEX,
+  createNewPlayer,
+} from "./newPlayerHandler";
+import { MATCH_COMMAND, MATCH_REGEX, createMatch } from "./matchHandler";
+import { noopAckHandler } from "./commonHandlers";
 
 const importHistory: ShortcutLazyHandler = async ({ context, payload }) => {
   await context.client.views.open({
@@ -46,21 +54,85 @@ const ackModalSubmission: ViewSubmissionAckHandler = async (req) => {
 };
 const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
   const modalResponse = req.payload.view.state.values;
+  const channel = modalResponse.channel_id.channel_id.selected_channel!;
+
+  const existingChannel = await prismaClientService.db.channel.findUnique({
+    where: { id: channel },
+  });
+
+  if (existingChannel) {
+    await prismaClientService.db.match.deleteMany({
+      where: { channelId: channel },
+    });
+    await prismaClientService.db.player.deleteMany({
+      where: { channelId: channel },
+    });
+    await prismaClientService.db.channel.deleteMany({
+      where: { id: channel },
+    });
+  }
+  console.log(await prismaClientService.db.player.count(), "players");
+
+  await prismaClientService.db.channel.create({
+    data: {
+      id: channel,
+      teamId: req.payload.team?.id!,
+    },
+  });
   let cursor: string | undefined;
   let hasMore = false;
-  const history: string[] = [];
+  const maxEpoch = Math.floor(Date.now() / 1000) + ".999999";
+
+  const history: { ts: string; text: string }[] = [];
   do {
     const response = await req.context.client.conversations.history({
-      channel: modalResponse.channel_id.channel_id.selected_channel!,
+      channel: channel,
       cursor: cursor,
     });
     hasMore = response.has_more ?? false;
     cursor = response.response_metadata?.next_cursor;
-    history.push(...(response.messages?.map((m) => m.text ?? "") ?? []));
+    history.push(
+      ...(response.messages?.map((m) => ({
+        ts: m.ts ?? maxEpoch,
+        text: m.text ?? "",
+      })) ?? [])
+    );
   } while (hasMore);
+  const dbCommands = history.reverse().map((message) => {
+    switch (true) {
+      case message.text.startsWith(MATCH_COMMAND): {
+        const match = message.text.match(MATCH_REGEX);
+        if (!match) {
+          console.log("Invalid match", message.text);
+          return noopAckHandler;
+        }
+        const [_, winner, looser] = match;
+        return () => createMatch(winner, looser, channel);
+      }
+      case message.text.startsWith(NEW_PLAYER_COMMAND): {
+        const player = message.text.match(NEW_PLAYER_REGEX);
+        if (!player) {
+          console.log("Invalid player", message.text);
+          return noopAckHandler;
+        }
+
+        return () => createNewPlayer(player[1], channel);
+      }
+      default:
+        console.log("Message not recognized", message.text);
+        return noopAckHandler;
+    }
+  });
+  for (const command of dbCommands) {
+    await command();
+  }
   console.log(
     "🚀 ~ constasyncModalResponse:ViewSubmissionLazyHandler= ~ history:",
-    history
+    {
+      history,
+      players: await prismaClientService.db.player.findMany(),
+      matches: await prismaClientService.db.match.findMany(),
+    }
   );
   // Send the history to the user
   await req.context.client.chat.postEphemeral?.({
@@ -82,9 +154,9 @@ const addHistoryImportHandlers = (app: SlackApp<any>) => {
 handlerService.addHandler(addHistoryImportHandlers);
 handlerService.addManifestItem([
   {
-    name: "Import match history",
+    name: "Import/start match history",
     type: "global",
     callbackId: "import_history",
-    description: "Import match history",
+    description: "Import or start a match history in a channel",
   },
 ]);
