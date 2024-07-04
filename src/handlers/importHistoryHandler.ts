@@ -61,17 +61,11 @@ const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
   });
 
   if (existingChannel) {
-    await prismaClientService.db.match.deleteMany({
-      where: { channelId: channel },
-    });
-    await prismaClientService.db.player.deleteMany({
-      where: { channelId: channel },
-    });
-    await prismaClientService.db.channel.deleteMany({
+    await prismaClientService.db.channel.delete({
       where: { id: channel },
+      select: { matches: true, players: true },
     });
   }
-  console.log(await prismaClientService.db.player.count(), "players");
 
   await prismaClientService.db.channel.create({
     data: {

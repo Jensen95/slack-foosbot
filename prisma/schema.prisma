@@ -15,7 +15,7 @@ model Player {
   id          String     @id @default(cuid())
   initials    String
   channelId   String
-  channel     Channel    @relation(fields: [channelId], references: [id])
+  channel     Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
   name        String?
   updatedAt   DateTime   @updatedAt
   wonMatches  Match[]    @relation("MatchWinner")
@@ -34,7 +34,7 @@ model Match {
   looserId  String
   looser    Player   @relation("MatchLooser", fields: [looserId], references: [id])
   channelId String
-  channel   Channel  @relation(fields: [channelId], references: [id])
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   timestamp DateTime @default(now())
 }
 
@@ -54,7 +54,7 @@ model TrueSkill {
   sigma     Decimal
   pi        Decimal
   tau       Decimal
-  player    Player   @relation(fields: [playerId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String   @unique
   updatedAt DateTime @updatedAt
 }
@@ -64,7 +64,7 @@ model Glicko2 {
   rating    Decimal
   rd        Decimal
   vol       Decimal
-  player    Player   @relation(fields: [playerId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String   @unique
   updatedAt DateTime @updatedAt
 }
@@ -72,7 +72,7 @@ model Glicko2 {
 model Elo {
   id        String   @id @default(cuid())
   elo       Decimal
-  player    Player   @relation(fields: [playerId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String   @unique
   updatedAt DateTime @updatedAt
 }

@@ -5,7 +5,7 @@ CREATE TABLE "Player" (
     "channelId" TEXT NOT NULL,
     "name" TEXT,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Player_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Player_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -17,7 +17,7 @@ CREATE TABLE "Match" (
     "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Match_winnerId_fkey" FOREIGN KEY ("winnerId") REFERENCES "Player" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Match_looserId_fkey" FOREIGN KEY ("looserId") REFERENCES "Player" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Match_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Match_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -36,7 +36,7 @@ CREATE TABLE "TrueSkill" (
     "tau" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "TrueSkill_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "TrueSkill_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -47,7 +47,7 @@ CREATE TABLE "Glicko2" (
     "vol" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Glicko2_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Glicko2_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -56,7 +56,7 @@ CREATE TABLE "Elo" (
     "elo" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Elo_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Elo_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
