@@ -2,13 +2,13 @@ import { SlackApp } from "slack-cloudflare-workers";
 import { handlerService } from "../handlerService";
 import { prismaClientService } from "../prismaClientService";
 import { SlackAppEnv } from "..";
+import { playerVsPlayerService } from "../scoring/playerVsPlayer";
 
 export const NEW_PLAYER_COMMAND = "!newplayer";
 export const NEW_PLAYER_REGEX = new RegExp(
   `${NEW_PLAYER_COMMAND} ([A-Z]{3})`,
   "im"
 );
-export const START_ELO = 1000;
 
 export const createNewPlayer = async (player: string, channelId: string) => {
   const existingPlayer = await prismaClientService.db.player.findFirst({
@@ -21,11 +21,26 @@ export const createNewPlayer = async (player: string, channelId: string) => {
     console.log("Player already exists", existingPlayer);
     return;
   }
+  const newPlayer = playerVsPlayerService.newPlayer();
+  const scores = () => {
+    let r = {};
+    for (const key in newPlayer) {
+      const value = newPlayer[key as keyof typeof newPlayer];
+      console.log("🚀 ~ scores ~ value:", value);
+      r = {
+        ...r,
+        [key]: {
+          create: value,
+        },
+      };
+    }
+    return r;
+  };
   await prismaClientService.db.player.create({
     data: {
       initials: player,
-      elo: START_ELO,
       channelId: channelId,
+      ...scores(),
     },
   });
 };

@@ -2,12 +2,38 @@ import { SlackApp } from "slack-cloudflare-workers";
 import { handlerService } from "../handlerService";
 import { prismaClientService } from "../prismaClientService";
 import { SlackAppEnv } from "..";
+import { playerVsPlayerService } from "../scoring/playerVsPlayer";
+import { Player } from "@prisma/client";
 
 export const MATCH_COMMAND = "!game";
 export const MATCH_REGEX = new RegExp(
   `${MATCH_COMMAND} ([A-Z]{3}) ([A-Z]{3})`,
   "im"
 );
+
+const updatePlayerScore = async (player: any, updatedPlayerScores: any) => {
+  const scores = () => {
+    let r = {};
+    for (const key in updatedPlayerScores) {
+      r = {
+        ...r,
+        [key]: {
+          update: {
+            ...player[key as keyof typeof player],
+            ...updatedPlayerScores[key as keyof typeof updatedPlayerScores],
+          },
+        },
+      };
+    }
+    return r;
+  };
+  await prismaClientService.db.player.update({
+    where: { id: player.id },
+    data: {
+      ...scores(),
+    },
+  });
+};
 export const createMatch = async (
   winner: string,
   looser: string,
@@ -18,20 +44,26 @@ export const createMatch = async (
       channelId: { equals: channelId },
       initials: { in: [winner, looser] },
     },
+    include: { elo: true, glicko2: true, trueSkill: true },
   });
   if (players.length !== 2) {
     return;
   }
+  const winnerPlayer = players.find((p) => p.initials === winner)!;
+  const looserPlayer = players.find((p) => p.initials === looser)!;
   await prismaClientService.db.match.create({
     data: {
-      looserId: winner,
-      winnerId: looser,
+      looserId: looserPlayer.id,
+      winnerId: winnerPlayer.id,
       channelId: channelId,
-      players: {
-        connect: players,
-      },
     },
   });
+  const { looser: _looser, winner: _winner } = playerVsPlayerService.match(
+    winnerPlayer as any,
+    looserPlayer as any
+  );
+  await updatePlayerScore(winnerPlayer, _winner);
+  await updatePlayerScore(looserPlayer, _looser);
 };
 
 const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {

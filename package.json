@@ -21,6 +21,9 @@
     "@cloudflare/itty-router-openapi": "^1.1.1",
     "@prisma/adapter-d1": "^5.15.1",
     "@prisma/client": "^5.15.1",
-    "slack-cloudflare-workers": "^0.13.0"
+    "glicko2": "^1.2.1",
+    "slack-cloudflare-workers": "^0.13.0",
+    "teslo": "^0.5.2",
+    "ts-trueskill": "^5.0.1"
   }
 }
