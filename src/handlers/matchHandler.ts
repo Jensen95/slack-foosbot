@@ -19,7 +19,6 @@ const updatePlayerScore = async (player: any, updatedPlayerScores: any) => {
         ...r,
         [key]: {
           update: {
-            ...player[key as keyof typeof player],
             ...updatedPlayerScores[key as keyof typeof updatedPlayerScores],
           },
         },

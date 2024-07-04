@@ -15,22 +15,25 @@ import { Prisma } from "@prisma/client";
 class TrueSkillService implements PlayerVsPlayer<TrueSkillScore> {
   #ts = new TrueSkill(25, undefined, undefined, undefined, 0);
   public readonly match = (winner: TrueSkillScore, looser: TrueSkillScore) => {
-    const _winner = new Rating(
-      new SkillGaussian(
-        winner.mu.toNumber(),
-        winner.sigma.toNumber(),
-        winner.pi.toNumber(),
-        winner.tau.toNumber()
-      )
-    );
-    const _looser = new Rating(
-      new SkillGaussian(
-        looser.mu.toNumber(),
-        looser.sigma.toNumber(),
-        looser.pi.toNumber(),
-        looser.tau.toNumber()
-      )
-    );
+    // Figure out why it gives floating point error
+    // const _winner = new Rating(
+    //   new SkillGaussian(
+    //     winner.mu.toNumber(),
+    //     winner.sigma.toNumber(),
+    //     winner.pi.toNumber(),
+    //     winner.tau.toNumber()
+    //   )
+    // );
+    // const _looser = new Rating(
+    //   new SkillGaussian(
+    //     looser.mu.toNumber(),
+    //     looser.sigma.toNumber(),
+    //     looser.pi.toNumber(),
+    //     looser.tau.toNumber()
+    //   )
+    // );
+    const _winner = new Rating(winner.mu.toNumber(), winner.sigma.toNumber());
+    const _looser = new Rating(looser.mu.toNumber(), looser.sigma.toNumber());
     const [newWinner, newLooser] = rate_1vs1(
       _winner,
       _looser,

@@ -32,6 +32,25 @@ const runModels =
 
 class PlayerVsPlayerService implements PlayerVsPlayer<PvPScores> {
   public readonly match = (winner: PvPScores, looser: PvPScores) => {
+    const elo = eloService.match(winner.elo, looser.elo);
+    const glicko2 = glicko2Service.match(winner.glicko2, looser.glicko2);
+    const trueSkill = trueSkillService.match(
+      winner.trueSkill,
+      looser.trueSkill
+    );
+    return {
+      winner: {
+        elo: elo.winner,
+        glicko2: glicko2.winner,
+        trueSkill: trueSkill.winner,
+      },
+      looser: {
+        elo: elo.looser,
+        glicko2: glicko2.looser,
+        trueSkill: trueSkill.looser,
+      },
+    };
+
     return runModels("match")(winner, looser);
   };
 

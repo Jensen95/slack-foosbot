@@ -26,7 +26,6 @@ export const createNewPlayer = async (player: string, channelId: string) => {
     let r = {};
     for (const key in newPlayer) {
       const value = newPlayer[key as keyof typeof newPlayer];
-      console.log("🚀 ~ scores ~ value:", value);
       r = {
         ...r,
         [key]: {

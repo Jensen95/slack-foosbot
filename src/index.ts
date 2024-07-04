@@ -26,7 +26,6 @@ export default {
     env: SlackAppEnv,
     ctx: ExecutionContext
   ): Promise<Response> {
-    console.log("🚀 ~ request.url:", request);
     prismaClientService.initialize(env.DB);
     if (request.headers.get("x-slack-signature")) {
       const app = new SlackApp<SlackAppEnv>({ env })
