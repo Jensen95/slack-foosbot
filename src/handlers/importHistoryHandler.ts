@@ -120,14 +120,7 @@ const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
   for (const command of dbCommands) {
     await command();
   }
-  console.log(
-    "🚀 ~ constasyncModalResponse:ViewSubmissionLazyHandler= ~ history:",
-    {
-      history,
-      players: await prismaClientService.db.player.findMany(),
-      matches: await prismaClientService.db.match.findMany(),
-    }
-  );
+
   // Send the history to the user
   await req.context.client.chat.postEphemeral?.({
     text: "It's done :white_check_mark:",

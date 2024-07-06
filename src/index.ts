@@ -72,6 +72,7 @@ export default {
             include: { elo: true, glicko2: true, trueSkill: true },
           }),
           matches: await prismaClientService.db.match.findMany(),
+          elo: await prismaClientService.db.elo.findMany(),
         },
         null,
         2

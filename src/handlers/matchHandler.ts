@@ -12,26 +12,14 @@ export const MATCH_REGEX = new RegExp(
 );
 
 const updatePlayerScore = async (player: any, updatedPlayerScores: any) => {
-  const scores = () => {
-    let r = {};
-    for (const key in updatedPlayerScores) {
-      r = {
-        ...r,
-        [key]: {
-          update: {
-            ...updatedPlayerScores[key as keyof typeof updatedPlayerScores],
-          },
-        },
-      };
-    }
-    return r;
-  };
-  await prismaClientService.db.player.update({
-    where: { id: player.id },
-    data: {
-      ...scores(),
-    },
-  });
+  for (const key in updatedPlayerScores) {
+    await prismaClientService.db[key as "elo"].create({
+      data: {
+        ...updatedPlayerScores[key as keyof typeof updatedPlayerScores],
+        playerId: player.id,
+      },
+    });
+  }
 };
 export const createMatch = async (
   winner: string,
@@ -43,7 +31,13 @@ export const createMatch = async (
       channelId: { equals: channelId },
       initials: { in: [winner, looser] },
     },
-    include: { elo: true, glicko2: true, trueSkill: true },
+    select: {
+      elo: { orderBy: { timestamp: "desc" }, take: 2 },
+      glicko2: { orderBy: { timestamp: "desc" }, take: 3 },
+      trueSkill: { orderBy: { timestamp: "desc" }, take: 4 },
+      id: true,
+      initials: true,
+    },
   });
   if (players.length !== 2) {
     return;
@@ -58,9 +52,18 @@ export const createMatch = async (
     },
   });
   const { looser: _looser, winner: _winner } = playerVsPlayerService.match(
-    winnerPlayer as any,
-    looserPlayer as any
+    {
+      elo: winnerPlayer.elo[0],
+      glicko2: winnerPlayer.glicko2[0],
+      trueSkill: winnerPlayer.trueSkill[0],
+    },
+    {
+      elo: looserPlayer.elo[0],
+      glicko2: looserPlayer.glicko2[0],
+      trueSkill: looserPlayer.trueSkill[0],
+    }
   );
+  console.log("🚀 ~ _winner:", _winner);
   await updatePlayerScore(winnerPlayer, _winner);
   await updatePlayerScore(looserPlayer, _looser);
 };
@@ -83,9 +86,9 @@ const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
         channelId: { equals: payload.channel },
         initials: { in: [player1, player2] },
       },
+      select: { _count: true },
     });
 
-    console.log(players);
     if (players.length !== 2) {
       await context.client.chat.postEphemeral({
         channel: payload.channel,

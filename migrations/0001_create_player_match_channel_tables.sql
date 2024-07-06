@@ -35,7 +35,7 @@ CREATE TABLE "TrueSkill" (
     "pi" DECIMAL NOT NULL,
     "tau" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
-    "updatedAt" DATETIME NOT NULL,
+    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "TrueSkill_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -46,7 +46,7 @@ CREATE TABLE "Glicko2" (
     "rd" DECIMAL NOT NULL,
     "vol" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
-    "updatedAt" DATETIME NOT NULL,
+    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Glicko2_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE "Elo" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "elo" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
-    "updatedAt" DATETIME NOT NULL,
+    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Elo_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -67,13 +67,4 @@ CREATE UNIQUE INDEX "Channel_teamId_key" ON "Channel"("teamId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Channel_id_teamId_key" ON "Channel"("id", "teamId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "TrueSkill_playerId_key" ON "TrueSkill"("playerId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Glicko2_playerId_key" ON "Glicko2"("playerId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Elo_playerId_key" ON "Elo"("playerId");
 

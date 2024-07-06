@@ -12,17 +12,17 @@ datasource db {
 }
 
 model Player {
-  id          String     @id @default(cuid())
+  id          String      @id @default(cuid())
   initials    String
   channelId   String
-  channel     Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel     Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
   name        String?
-  updatedAt   DateTime   @updatedAt
-  wonMatches  Match[]    @relation("MatchWinner")
-  lostMatches Match[]    @relation("MatchLooser")
-  trueSkill   TrueSkill?
-  glicko2     Glicko2?
-  elo         Elo?
+  updatedAt   DateTime    @updatedAt
+  wonMatches  Match[]     @relation("MatchWinner")
+  lostMatches Match[]     @relation("MatchLooser")
+  trueSkill   TrueSkill[]
+  glicko2     Glicko2[]
+  elo         Elo[]
 
   @@unique([initials, channelId])
 }
@@ -55,8 +55,8 @@ model TrueSkill {
   pi        Decimal
   tau       Decimal
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  playerId  String   @unique
-  updatedAt DateTime @updatedAt
+  playerId  String
+  timestamp DateTime @default(now())
 }
 
 model Glicko2 {
@@ -65,14 +65,14 @@ model Glicko2 {
   rd        Decimal
   vol       Decimal
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  playerId  String   @unique
-  updatedAt DateTime @updatedAt
+  playerId  String
+  timestamp DateTime @default(now())
 }
 
 model Elo {
   id        String   @id @default(cuid())
   elo       Decimal
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  playerId  String   @unique
-  updatedAt DateTime @updatedAt
+  playerId  String
+  timestamp DateTime @default(now())
 }
