@@ -36,7 +36,9 @@ CREATE TABLE "TrueSkill" (
     "tau" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
     "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "TrueSkill_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "matchId" TEXT,
+    CONSTRAINT "TrueSkill_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "TrueSkill_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "Match" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -47,7 +49,9 @@ CREATE TABLE "Glicko2" (
     "vol" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
     "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Glicko2_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "matchId" TEXT,
+    CONSTRAINT "Glicko2_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Glicko2_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "Match" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -56,7 +60,9 @@ CREATE TABLE "Elo" (
     "elo" DECIMAL NOT NULL,
     "playerId" TEXT NOT NULL,
     "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Elo_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "matchId" TEXT,
+    CONSTRAINT "Elo_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Elo_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "Match" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateIndex

@@ -3,7 +3,6 @@ import { handlerService } from "../handlerService";
 import { prismaClientService } from "../prismaClientService";
 import { SlackAppEnv } from "..";
 import { playerVsPlayerService } from "../scoring/playerVsPlayer";
-import { Player } from "@prisma/client";
 
 export const MATCH_COMMAND = "!game";
 export const MATCH_REGEX = new RegExp(
@@ -11,12 +10,17 @@ export const MATCH_REGEX = new RegExp(
   "im"
 );
 
-const updatePlayerScore = async (player: any, updatedPlayerScores: any) => {
+const updatePlayerScore = async (
+  playerId: string,
+  matchId: string,
+  updatedPlayerScores: any
+) => {
   for (const key in updatedPlayerScores) {
     await prismaClientService.db[key as "elo"].create({
       data: {
         ...updatedPlayerScores[key as keyof typeof updatedPlayerScores],
-        playerId: player.id,
+        playerId,
+        matchId,
       },
     });
   }
@@ -44,7 +48,7 @@ export const createMatch = async (
   }
   const winnerPlayer = players.find((p) => p.initials === winner)!;
   const looserPlayer = players.find((p) => p.initials === looser)!;
-  await prismaClientService.db.match.create({
+  const match = await prismaClientService.db.match.create({
     data: {
       looserId: looserPlayer.id,
       winnerId: winnerPlayer.id,
@@ -63,9 +67,8 @@ export const createMatch = async (
       trueSkill: looserPlayer.trueSkill[0],
     }
   );
-  console.log("🚀 ~ _winner:", _winner);
-  await updatePlayerScore(winnerPlayer, _winner);
-  await updatePlayerScore(looserPlayer, _looser);
+  await updatePlayerScore(winnerPlayer.id, match.id, _winner);
+  await updatePlayerScore(winnerPlayer.id, match.id, _looser);
 };
 
 const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
