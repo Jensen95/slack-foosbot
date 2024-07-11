@@ -25,6 +25,7 @@ const updatePlayerScore = async (
     });
   }
 };
+
 export const createMatch = async (
   winner: string,
   looser: string,
@@ -36,9 +37,12 @@ export const createMatch = async (
       initials: { in: [winner, looser] },
     },
     select: {
-      elo: { orderBy: { timestamp: "desc" }, take: 2 },
-      glicko2: { orderBy: { timestamp: "desc" }, take: 3 },
-      trueSkill: { orderBy: { timestamp: "desc" }, take: 4 },
+      elo: {
+        orderBy: { timestamp: "desc" },
+        take: 1,
+      },
+      glicko2: { orderBy: { timestamp: "desc" }, take: 1 },
+      trueSkill: { orderBy: { timestamp: "desc" }, take: 1 },
       id: true,
       initials: true,
     },
@@ -68,7 +72,7 @@ export const createMatch = async (
     }
   );
   await updatePlayerScore(winnerPlayer.id, match.id, _winner);
-  await updatePlayerScore(winnerPlayer.id, match.id, _looser);
+  await updatePlayerScore(looserPlayer.id, match.id, _looser);
 };
 
 const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
