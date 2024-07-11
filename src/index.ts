@@ -14,6 +14,7 @@ import {
 } from "./handlers/index";
 import { handlerService } from "./handlerService";
 import { prismaClientService } from "./prismaClientService";
+import { handleRoutes } from "./routes";
 
 export interface Env {
   DB: D1Database;
@@ -65,19 +66,6 @@ export default {
         .run(request, ctx);
     }
 
-    return new Response(
-      JSON.stringify(
-        {
-          players: await prismaClientService.db.player.findMany({
-            include: { elo: true, glicko2: true, trueSkill: true },
-          }),
-          matches: await prismaClientService.db.match.findMany(),
-          elo: await prismaClientService.db.elo.findMany(),
-        },
-        null,
-        2
-      ),
-      { status: 200 }
-    );
+    return handleRoutes(request, env, ctx);
   },
 };

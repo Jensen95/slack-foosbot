@@ -15,9 +15,9 @@ A bot for keeping scores of foosball games.
     - Maybe have a manifest object exported by each handler that can be collected on build
   - Generate with url / available on endpoint
     - Can maybe be done automatically
-- [ ] Handle other paths than /slack with @cloudflare/itty-router-openapi
+- [x] Handle other paths than /slack with @cloudflare/itty-router-openapi
 - [ ] Generate graphs with the leaderboard
-- [ ] Import history from channel
+- [x] Import history from channel
 
 ###
 

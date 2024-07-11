@@ -1,6 +1,9 @@
 import type { Elo, Glicko2, TrueSkill } from "@prisma/client";
 
-export type ScoreCleanedFromDb<T> = Omit<T, "id" | "playerId" | "updatedAt">;
+export type ScoreCleanedFromDb<T> = Omit<
+  T,
+  "id" | "playerId" | "updatedAt" | "matchId" | "timestamp"
+>;
 
 export type EloScore = ScoreCleanedFromDb<Elo>;
 export type GlickoScore = ScoreCleanedFromDb<Glicko2>;
