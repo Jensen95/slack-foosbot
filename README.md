@@ -19,6 +19,10 @@ A bot for keeping scores of foosball games.
 - [ ] Generate graphs with the leaderboard
 - [x] Import history from channel
 
+- thumbnails 
+  - base64 encode and have a route that transform it into an image?
+  - use d3 to help drawing the svg without generating a node?
+
 ###
 
 - Glicko2:

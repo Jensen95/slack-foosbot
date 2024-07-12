@@ -21,7 +21,6 @@
     "@prisma/adapter-d1": "^5.15.1",
     "@prisma/client": "^5.15.1",
     "chanfana": "^2.0.2",
-    "d3": "^7.9.0",
     "glicko2": "^1.2.1",
     "itty-router": "^5.0.17",
     "slack-cloudflare-workers": "^0.13.0",
