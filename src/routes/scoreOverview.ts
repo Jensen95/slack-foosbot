@@ -19,30 +19,40 @@ export class GetChannelStat extends OpenAPIRoute {
       }),
     },
     response: {
-      200: z.array(
-        z.object({
-          playerId: z.string().min(1).max(256),
-          initials: z.string().min(1).max(256),
-          totalPlayedMatches: z.number(),
-          elo: z.object({
-            elo: z.number(),
-            timestamp: z.string(),
-          }),
-          glicko2: z.object({
-            rating: z.number(),
-            rd: z.number(),
-            vol: z.number(),
-            timestamp: z.string(),
-          }),
-          trueSkill: z.object({
-            mu: z.number(),
-            sigma: z.number(),
-            tau: z.number(),
-            timestamp: z.string(),
-          }),
-        }),
-        { description: "List of player scores in the channel" }
-      ),
+      200: {
+        description: "Channel stats",
+        content: {
+          "application/json": {
+            schema: z.array(
+              z.object({
+                playerId: z.string().min(1).max(256),
+                initials: z.string().min(1).max(256),
+                totalPlayedMatches: z.number(),
+                elo: z.object({
+                  elo: z.number(),
+                  timestamp: z.string(),
+                }),
+                glicko2: z.object({
+                  rating: z.number(),
+                  rd: z.number(),
+                  vol: z.number(),
+                  timestamp: z.string(),
+                }),
+                trueSkill: z.object({
+                  mu: z.number(),
+                  sigma: z.number(),
+                  tau: z.number(),
+                  timestamp: z.string(),
+                }),
+              }),
+              { description: "List of player scores in the channel" }
+            ),
+          },
+          "text/html": {
+            schema: z.string({ description: "HTML table of player scores" }),
+          },
+        },
+      },
       404: z.object({ error: z.string() }),
     },
   };
@@ -125,9 +135,16 @@ export class GetChannelStat extends OpenAPIRoute {
         </tr>
       `;
     };
-
-    return new Response(
-      `
+    switch (request.headers.get("Accept")) {
+      case "application/json":
+        return new Response(JSON.stringify(players), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      default:
+        return new Response(
+          `
       <html>
         <head>
           <title>Channel Stats</title>
@@ -156,11 +173,77 @@ export class GetChannelStat extends OpenAPIRoute {
           </body>
         </html>
 `,
-      {
-        headers: {
-          "Content-Type": "text/html",
-        },
-      }
-    );
+          {
+            headers: {
+              "Content-Type": "text/html",
+            },
+          }
+        );
+    }
   }
 }
+
+const generateD3Graph = (players: any) => {
+  return `
+  <html>
+    <head>
+      <title>Channel Stats</title>
+      <script src="https://d3js.org/d3.v7.min.js"></script>
+      <style>
+        .bar {
+          fill: steelblue;
+        }
+        .bar:hover {
+          fill: orange;
+        }
+        .axis {
+          font: 10px sans-serif;
+        }
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Channel Stats</h1>
+      <svg width="960" height="500"></svg>
+      <script>
+        const data = ${JSON.stringify(players)};
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 960 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+        const x = d3.scaleBand().range([0, width]).padding(0.1);
+        const y = d3.scaleLinear().range([height, 0]);
+        const svg = d3
+          .select("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        x.domain(data.map((d) => d.initials));
+        y.domain([0, d3.max(data, (d) => d.totalPlayedMatches)]);
+        svg
+          .append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+        svg.append("g").attr("class", "y axis").call(d3.axisLeft(y));
+        svg
+          .selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", (d) => x(d.initials))
+          .attr("width", x.bandwidth())
+          .attr("y", (d) => y(d.totalPlayedMatches))
+          .attr("height", (d) => height - y(d.totalPlayedMatches));
+      </script>
+    </body>
+  </html>
+  
+          `;
+};
