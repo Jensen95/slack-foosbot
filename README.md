@@ -19,6 +19,8 @@ A bot for keeping scores of foosball games.
 - [ ] Generate graphs with the leaderboard
 - [x] Import history from channel
 - [ ] Generate links correct links to worker
+- [ ] Add help
+  - Check if message is in a channel we subscribe to and display help if the message starts with ! 
 
 - thumbnails 
   - base64 encode and have a route that transform it into an image?

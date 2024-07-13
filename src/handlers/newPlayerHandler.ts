@@ -71,7 +71,9 @@ const addNewPlayerHandler = (app: SlackApp<SlackAppEnv>) => {
     const [_, player] = playerInitials;
 
     await createNewPlayer(player, payload.channel);
+    // TODO: Add response to user
   });
 };
 
 handlerService.addHandler(addNewPlayerHandler);
+handlerService.addMessageCommand(NEW_PLAYER_COMMAND, "Create a new player");

@@ -60,7 +60,7 @@ model TrueSkill {
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String
   timestamp DateTime @default(now())
-  match     Match?    @relation(fields: [matchId], references: [id])
+  match     Match?   @relation(fields: [matchId], references: [id])
   matchId   String?
 }
 
@@ -72,7 +72,7 @@ model Glicko2 {
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String
   timestamp DateTime @default(now())
-  match     Match?    @relation(fields: [matchId], references: [id])
+  match     Match?   @relation(fields: [matchId], references: [id])
   matchId   String?
 }
 
@@ -82,6 +82,6 @@ model Elo {
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String
   timestamp DateTime @default(now())
-  match     Match?    @relation(fields: [matchId], references: [id])
+  match     Match?   @relation(fields: [matchId], references: [id])
   matchId   String?
 }

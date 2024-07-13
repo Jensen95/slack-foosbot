@@ -180,3 +180,7 @@ const addColumnPadding =
   };
 
 handlerService.addHandler(rankHandler);
+handlerService.addMessageCommand(
+  RANK_COMMAND,
+  "Show the current ranking, use `!rank all` to include inactive players and `!rank elo|trueskill|glicko` to sort by score."
+);

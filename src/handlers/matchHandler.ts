@@ -105,7 +105,12 @@ const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
       return;
     }
     await createMatch(player1, player2, payload.channel);
+    // TODO: Add a response to the user
   });
 };
 
 handlerService.addHandler(addMatchHandler);
+handlerService.addMessageCommand(
+  MATCH_COMMAND,
+  "Create a new match, e.g. !game ABC DEF"
+);

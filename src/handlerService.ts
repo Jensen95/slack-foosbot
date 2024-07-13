@@ -16,6 +16,7 @@ interface ManifestItemBase {
 class HandlerService {
   #handlers: Handler[] = [];
   #manifestItems: ManifestItem[] = [];
+  #messageCommands: { command: string; description: string }[] = [];
 
   public readonly addHandler = (handler: Handler) => {
     this.#handlers.push(handler);
@@ -23,6 +24,24 @@ class HandlerService {
 
   public readonly addManifestItem = (manifestItem: ManifestItem[]) => {
     this.#manifestItems.push(...manifestItem);
+  };
+
+  public readonly addMessageCommand = (
+    command: `!${string}`,
+    description: string
+  ) => {
+    this.#messageCommands.push({ command, description });
+  };
+
+  public readonly getCommandHelp = (recivedCommand: string) => {
+    return [
+      "Invalid command received",
+      `'${recivedCommand}', is one of the following commands:`,
+      "",
+      ...this.#messageCommands.map(
+        ({ command, description }) => `${command} - ${description}`
+      ),
+    ].join("\n");
   };
 
   public readonly applyHandlersToApp = (app: SlackApp<any>) => {
