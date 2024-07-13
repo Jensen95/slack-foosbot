@@ -1,8 +1,8 @@
 import { SlackApp } from "slack-cloudflare-workers";
-import { handlerService } from "../handlerService";
-import { prismaClientService } from "../prismaClientService";
-import { SlackAppEnv } from "..";
-import { playerVsPlayerService } from "../scoring/playerVsPlayer";
+import { handlerService } from "../../handlerService";
+import { prismaClientService } from "../../prismaClientService";
+import { SlackAppEnv } from "../..";
+import { playerVsPlayerService } from "../../scoring/playerVsPlayer";
 
 export const MATCH_COMMAND = "!game";
 export const MATCH_REGEX = new RegExp(

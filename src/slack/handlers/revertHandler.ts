@@ -1,7 +1,7 @@
 import { SlackApp } from "slack-cloudflare-workers";
-import { handlerService } from "../handlerService";
-import { prismaClientService } from "../prismaClientService";
-import { SlackAppEnv } from "..";
+import { handlerService } from "../../handlerService";
+import { prismaClientService } from "../../prismaClientService";
+import { SlackAppEnv } from "../..";
 
 export const REVERT_COMMAND = "!whoops";
 export const REVERT_REGEX = new RegExp(`${REVERT_COMMAND}`, "im");

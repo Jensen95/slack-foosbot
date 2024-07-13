@@ -5,8 +5,8 @@ import {
   ViewSubmissionAckHandler,
   ViewSubmissionLazyHandler,
 } from "slack-cloudflare-workers";
-import { handlerService } from "../handlerService";
-import { prismaClientService } from "../prismaClientService";
+import { handlerService } from "../../handlerService";
+import { prismaClientService } from "../../prismaClientService";
 import {
   NEW_PLAYER_COMMAND,
   NEW_PLAYER_REGEX,
