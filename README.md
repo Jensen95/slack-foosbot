@@ -18,10 +18,13 @@ A bot for keeping scores of foosball games.
 - [x] Handle other paths than /slack with @cloudflare/itty-router-openapi
 - [ ] Generate graphs with the leaderboard
 - [x] Import history from channel
+- [ ] Generate links correct links to worker
 
 - thumbnails 
   - base64 encode and have a route that transform it into an image?
   - use d3 to help drawing the svg without generating a node?
+  - return chart on endpoint thumbnail then queries the endpoint at picks the svgs converts it to img and gives that as an url
+  - 
 
 ###
 
