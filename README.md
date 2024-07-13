@@ -6,7 +6,7 @@ A bot for keeping scores of foosball games.
 
 - [x] Add a way to add players
 - [x] Add a way to add games
-- [ ] Add a way to see the leaderboard
+- [x] Add a way to see the leaderboard
 - [ ] Add a way to see the history of games
 - [ ] Add a way to see the history of a player
 - [ ] Add a way to autogenerate app.manifest
@@ -28,12 +28,22 @@ A bot for keeping scores of foosball games.
   - return chart on endpoint thumbnail then queries the endpoint at picks the svgs converts it to img and gives that as an url
   - 
 
-###
 
-- Glicko2:
-  https://github.com/mmai/glicko2js
-- ELO:
-  https://github.com/hoersamu/multi-elo
-- TrueSkill:
-  https://github.com/scttcper/ts-trueskill
-  https://github.com/philihp/openskill.js
+
+## Local development
+
+### Tunnel traffic cloudflared
+
+#### With a named tunnel
+
+```sh
+cloudflared tunnel run --url http://localhost:8787 foosbot
+```
+
+#### Without a named tunnel 
+
+```sh
+cloudflared tunnel --url http://localhost:8787 
+```
+
+With this approuch a new manifest needs to be applied to the slack app with the updated url returned by the command.
