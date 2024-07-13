@@ -14,6 +14,7 @@ import {
 } from "./newPlayerHandler";
 import { MATCH_COMMAND, MATCH_REGEX, createMatch } from "./matchHandler";
 import { noopAckHandler } from "./commonHandlers";
+import { REVERT_COMMAND, revertLastMatch } from "./revertHandler";
 
 const importHistory: ShortcutLazyHandler = async ({ context, payload }) => {
   await context.client.views.open({
@@ -111,6 +112,9 @@ const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
         }
 
         return () => createNewPlayer(player[1], channel);
+      }
+      case message.text.startsWith(REVERT_COMMAND): {
+        return () => revertLastMatch(channel);
       }
       default:
         console.log("Message not recognized", message.text);
