@@ -1,7 +1,7 @@
 import { SlackEdgeAppEnv } from "slack-cloudflare-workers";
 import { prismaClientService } from "./prismaClientService";
-import { handleRoutes } from "./routes";
-import { handleSlack } from "./slack";
+import { handelRoutes } from "./routes";
+import { handelSlack } from "./slack";
 
 export interface Env {
   DB: D1Database;
@@ -16,9 +16,10 @@ export default {
   ): Promise<Response> {
     prismaClientService.initialize(env.DB);
     if (request.headers.get("x-slack-signature")) {
-      return handleSlack(request, env, ctx);
+      console.log("Handling slack request");
+      return handelSlack(request, env, ctx);
     }
 
-    return handleRoutes(request, env, ctx);
+    return handelRoutes(request, env, ctx);
   },
 };

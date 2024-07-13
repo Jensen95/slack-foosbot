@@ -1,1 +1,1 @@
-export { handleSlack } from "./handelSlack";
+export { handelSlack } from "./handelSlack";

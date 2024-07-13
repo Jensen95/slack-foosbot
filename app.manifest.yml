@@ -9,12 +9,6 @@ features:
       type: global
       callback_id: import_history
       description: Import match history from a channel of your choosing
-  slash_commands:
-    - command: /hello-cf-workers
-      url: https://foosbot.jensen95.dk
-      description: test
-      usage_hint: test
-      should_escape: false
 oauth_config:
   scopes:
     bot:

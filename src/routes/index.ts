@@ -1,1 +1,1 @@
-export { handleRoutes } from "./handleRoutes";
+export { handelRoutes } from "./handelRoutes";

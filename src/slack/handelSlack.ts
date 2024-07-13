@@ -15,7 +15,7 @@ import {
 } from "./handlers";
 import { handlerService } from "../handlerService";
 
-export const handleSlack = async (
+export const handelSlack = async (
   request: Request,
   env: SlackAppEnv,
   ctx: ExecutionContext
