@@ -4,6 +4,7 @@ on:
     branches:
       - master
   repository_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -25,3 +26,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Apply D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: d1 migrations apply DB
