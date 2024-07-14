@@ -1,7 +1,6 @@
 import { OpenAPIRoute } from "chanfana";
 import { z } from "zod";
 import { prismaClientService } from "../prismaClientService";
-import { Env } from "..";
 
 export class GetPlayerStats extends OpenAPIRoute {
   schema = {

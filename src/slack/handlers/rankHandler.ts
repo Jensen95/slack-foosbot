@@ -1,7 +1,6 @@
 import { SlackApp } from "slack-cloudflare-workers";
 import { handlerService } from "../../handlerService";
 import { prismaClientService } from "../../prismaClientService";
-import { SlackAppEnv } from "../..";
 
 export const RANK_COMMAND = "!rank";
 export const RANK_REGEX = new RegExp(

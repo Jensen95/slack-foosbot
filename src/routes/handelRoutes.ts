@@ -1,7 +1,6 @@
 import { fromIttyRouter } from "chanfana";
 import { IttyRouter, error } from "itty-router";
 import { GetChannelStat } from "./scoreOverview";
-import type { Env } from "..";
 import { GetPlayerStats } from "./playerScores";
 
 export const handelRoutes = (

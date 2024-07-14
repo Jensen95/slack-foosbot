@@ -1,7 +1,6 @@
 import { fromIttyRouter, OpenAPIRoute } from "chanfana";
 import { z } from "zod";
 import { prismaClientService } from "../prismaClientService";
-import { Env } from "..";
 
 export class GetChannelStat extends OpenAPIRoute {
   schema = {

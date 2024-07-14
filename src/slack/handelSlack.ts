@@ -1,5 +1,4 @@
 import { SlackApp } from "slack-cloudflare-workers";
-import { SlackAppEnv } from "..";
 import {
   appMention,
   helloMessage,

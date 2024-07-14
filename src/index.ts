@@ -1,13 +1,7 @@
-import { SlackEdgeAppEnv } from "slack-cloudflare-workers";
 import { prismaClientService } from "./prismaClientService";
 import { handelRoutes } from "./routes";
 import { handelSlack } from "./slack";
 
-export interface Env {
-  DB: D1Database;
-}
-
-export type SlackAppEnv = SlackEdgeAppEnv & Env;
 export default {
   async fetch(
     request: Request,
@@ -22,4 +16,4 @@ export default {
 
     return handelRoutes(request, env, ctx);
   },
-};
+} satisfies ExportedHandler<SlackAppEnv>;
