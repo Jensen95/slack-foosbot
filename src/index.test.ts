@@ -17,6 +17,10 @@ describe("Worker", () => {
   beforeAll(async () => {
     worker = await unstable_dev("src/index.ts", {
       experimental: { disableExperimentalWarning: true },
+      vars: {
+        SLACK_BOT_TOKEN: "test",
+        SLACK_SIGNING_SECRET: "test",
+      },
     });
   });
 
