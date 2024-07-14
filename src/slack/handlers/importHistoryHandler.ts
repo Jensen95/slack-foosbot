@@ -117,7 +117,7 @@ const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
         return () => revertLastMatch(channel);
       }
       default:
-        console.log("Message not recognized", message.text);
+        // console.log("Message not recognized", message.text);
         return noopAckHandler;
     }
   });
