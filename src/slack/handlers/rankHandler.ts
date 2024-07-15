@@ -22,7 +22,8 @@ const rankHandler = (app: SlackApp<SlackAppEnv>) => {
       });
       return;
     }
-    const [_, includeInactive, sortBy] = text.match(RANK_REGEX) || [];
+    const [_, includeInactive, _sortByWithSpace, sortBy] =
+      text.match(RANK_REGEX) || [];
     const sortByScore: "elo" | "trueSkill" | "glicko2" =
       (sortBy as any) || "glicko2";
     const players = await prismaClientService.db.player.findMany({
