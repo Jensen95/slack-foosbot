@@ -122,7 +122,11 @@ const asyncModalResponse: ViewSubmissionLazyHandler = async (req) => {
     }
   });
   for (const command of dbCommands) {
-    await command();
+    try {
+      await command();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // Send the history to the user
