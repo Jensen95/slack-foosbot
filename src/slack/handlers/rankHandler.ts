@@ -4,7 +4,7 @@ import { prismaClientService } from "../../prismaClientService";
 
 export const RANK_COMMAND = "!rank";
 export const RANK_REGEX = new RegExp(
-  `${RANK_COMMAND}( ?all){0,1}( ?(elo|trueskill|glicko2)){0,1}`,
+  `^${RANK_COMMAND}( ?all){0,1}( ?(elo|trueskill|glicko2)){0,1}`,
   "im"
 );
 

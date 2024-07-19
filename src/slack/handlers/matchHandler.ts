@@ -5,7 +5,7 @@ import { playerVsPlayerService } from "../../scoring/playerVsPlayer";
 
 export const MATCH_COMMAND = "!game";
 export const MATCH_REGEX = new RegExp(
-  `${MATCH_COMMAND} ([A-Z]{3}) ([A-Z]{3})`,
+  `^${MATCH_COMMAND} ([A-Z]{3}) ([A-Z]{3})`,
   "im"
 );
 
