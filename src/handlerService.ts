@@ -33,11 +33,15 @@ class HandlerService {
     this.#messageCommands.push({ command, description });
   };
 
-  public readonly getCommandHelp = (recivedCommand: string) => {
+  public readonly getCommandHelp = (recivedCommand?: string) => {
     return [
-      "Invalid command received",
-      `'${recivedCommand}', is one of the following commands:`,
-      "",
+      ...(recivedCommand
+        ? [
+            "Invalid command received",
+            `'${recivedCommand}', is one of the following commands:`,
+            "",
+          ]
+        : ["Available commands:", ""]),
       ...this.#messageCommands.map(
         ({ command, description }) => `${command} - ${description}`
       ),
