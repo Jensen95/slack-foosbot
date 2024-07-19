@@ -5,3 +5,4 @@ export * from "./matchHandler";
 export * from "./newPlayerHandler";
 export * from "./rankHandler";
 export * from "./revertHandler";
+export * from "./helpHandler";

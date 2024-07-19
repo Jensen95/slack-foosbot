@@ -1,17 +1,5 @@
-import { SlackApp } from "slack-cloudflare-workers";
-import {
-  appMention,
-  helloMessage,
-  noopAckHandler,
-  asyncButtonResponse,
-  ackCommand,
-  asyncCommandResponse,
-  asyncShortcutResponse,
-  asyncMessageShortcut,
-  ackModalSubmission,
-  asyncModalResponse,
-  otherMessages,
-} from "./handlers";
+import { isPostedMessageEvent, SlackApp } from "slack-cloudflare-workers";
+import { appMention, otherMessages } from "./handlers";
 import { handlerService } from "../handlerService";
 
 export const handelSlack = async (
@@ -52,6 +40,10 @@ export const handelSlack = async (
   return await handlerService
     .applyHandlersToApp(app)
     // Message event is a catch all an should be at the end
-    .event("message", otherMessages)
+    .event("message", async ({ payload, context }) => {
+      if (isPostedMessageEvent(payload)) {
+        context.say({ text: handlerService.getCommandHelp(payload.text) });
+      }
+    })
     .run(request, ctx);
 };
