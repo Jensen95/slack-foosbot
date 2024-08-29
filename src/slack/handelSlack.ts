@@ -1,5 +1,5 @@
 import { isPostedMessageEvent, SlackApp } from "slack-cloudflare-workers";
-import { appMention, otherMessages } from "./handlers";
+import { appMention } from "./handlers";
 import { handlerService } from "../handlerService";
 
 export const handelSlack = async (
