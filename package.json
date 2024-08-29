@@ -2,7 +2,7 @@
   "name": "slack-foosbot",
   "version": "0.0.0",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240718.0",
+    "@cloudflare/workers-types": "^4.20240821.1",
     "prisma": "^5.17.0",
     "typescript": "^5.5.3",
     "vitest": "^2.0.3",
