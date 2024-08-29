@@ -121,45 +121,90 @@ const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
     }
 
     const { winnerPlayer, looserPlayer, updatedScores } = matchResult;
-
-    // Response to the user
-    await context.client.chat.postEphemeral({
+    const { winner: winnerUpdatedScores, looser: looserUpdatedScores } =
+      updatedScores;
+    await context.client.chat.postMessage({
       channel: payload.channel,
-      user: payload.user!,
-      text: `Match created!\nWinner: ${winnerPlayer.initials}\nLooser: ${
-        looserPlayer.initials
-      }\n\nPrevious Scores:\nWinner: ${JSON.stringify(
-        winnerPlayer
-      )}\nLooser: ${JSON.stringify(
-        looserPlayer
-      )}\n\nUpdated Scores:\nWinner: ${JSON.stringify(
-        updatedScores.winner
-      )}\nLooser: ${JSON.stringify(updatedScores.looser)}`,
+      text: `Match finished!\nWinner: ${winnerPlayer.initials}\nLooser: ${looserPlayer.initials}`,
+      blocks: [
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: `Match finished!`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*Elo Scores:*\nWinner: ${
+              winnerPlayer.initials
+            } - ${winnerUpdatedScores.elo.elo.toDecimalPlaces(2).toString()}
+            \nLooser: ${looserPlayer.initials} - ${looserUpdatedScores.elo.elo
+              .toDecimalPlaces(2)
+              .toString()}
+            Winner gained ${winnerUpdatedScores.elo.elo
+              .sub(winnerPlayer.elo[0].elo)
+              .toDecimalPlaces(2)
+              .toString()} points
+            Looser lost ${looserUpdatedScores.elo.elo
+              .sub(looserPlayer.elo[0].elo)
+              .toDecimalPlaces(2)
+              .toString()} points
+            `,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*Glicko2 Scores:*\nWinner: ${
+              winnerPlayer.initials
+            } - ${winnerUpdatedScores.glicko2.rating
+              .toDecimalPlaces(2)
+              .toString()}\nLooser: ${
+              looserPlayer.initials
+            } - ${looserUpdatedScores.glicko2.rating
+              .toDecimalPlaces(2)
+              .toString()}
+              Winner gained ${winnerUpdatedScores.glicko2.rating
+                .sub(winnerPlayer.glicko2[0].rating)
+                .toDecimalPlaces(2)
+                .toString()} points
+                Looser lost ${looserUpdatedScores.glicko2.rating
+                  .sub(looserPlayer.glicko2[0].rating)
+                  .toDecimalPlaces(2)
+                  .toString()} points
+              `,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*TrueSkill Scores:*\nWinner: ${
+              winnerPlayer.initials
+            } - ${winnerUpdatedScores.trueSkill.mu
+              .toDecimalPlaces(2)
+              .toString()}\nLooser: ${
+              looserPlayer.initials
+            } - ${looserUpdatedScores.trueSkill.mu
+              .toDecimalPlaces(2)
+              .toString()}
+            Winner gained ${winnerUpdatedScores.trueSkill.mu
+              .sub(winnerPlayer.trueSkill[0].mu)
+              .toDecimalPlaces(2)
+              .toString()} points
+              Looser lost ${looserUpdatedScores.trueSkill.mu
+                .sub(looserPlayer.trueSkill[0].mu)
+                .toDecimalPlaces(2)
+                .toString()} points
+              `,
+          },
+        },
+      ],
     });
-
-    // Response to the channel
-    // await context.client.chat.postMessage({
-    //   channel: payload.channel,
-    //   text: `Match finished!\nWinner: ${winnerPlayer.initials}\nLooser: ${looserPlayer.initials}`,
-    //   blocks: [
-    //     {
-    //       type: "section",
-    //       text: {
-    //         type: "mrkdwn",
-    //         text: `Match finished!\nWinner: ${winnerPlayer.initials}\nLooser: ${looserPlayer.initials}`,
-    //       },
-    //     },
-    //     {
-    //       type: "section",
-    //       text: {
-    //         type: "mrkdwn",
-    //         text: `Previous Scores:\nWinner: ${JSON.stringify(
-    //           winnerPlayer
-    //         )}\nLooser: ${JSON.stringify(looserPlayer)}`,
-    //       },
-    //     },
-    //   ],
-    // });
   });
 };
 
