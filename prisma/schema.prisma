@@ -43,7 +43,7 @@ model Match {
 
 model Channel {
   id        String   @id
-  teamId    String   @unique
+  teamId    String
   matches   Match[]
   players   Player[]
   updatedAt DateTime @updatedAt
