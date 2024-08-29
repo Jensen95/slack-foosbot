@@ -72,6 +72,13 @@ export const createMatch = async (
   );
   await updatePlayerScore(winnerPlayer.id, match.id, _winner);
   await updatePlayerScore(looserPlayer.id, match.id, _looser);
+
+  return {
+    match,
+    winnerPlayer,
+    looserPlayer,
+    updatedScores: { winner: _winner, looser: _looser },
+  };
 };
 
 const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
@@ -103,8 +110,56 @@ const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
       });
       return;
     }
-    await createMatch(player1, player2, payload.channel);
-    // TODO: Add a response to the user
+    const matchResult = await createMatch(player1, player2, payload.channel);
+    if (!matchResult) {
+      await context.client.chat.postEphemeral({
+        channel: payload.channel,
+        user: payload.user!,
+        text: "Match creation failed",
+      });
+      return;
+    }
+
+    const { winnerPlayer, looserPlayer, updatedScores } = matchResult;
+
+    // Response to the user
+    await context.client.chat.postEphemeral({
+      channel: payload.channel,
+      user: payload.user!,
+      text: `Match created!\nWinner: ${winnerPlayer.initials}\nLooser: ${
+        looserPlayer.initials
+      }\n\nPrevious Scores:\nWinner: ${JSON.stringify(
+        winnerPlayer
+      )}\nLooser: ${JSON.stringify(
+        looserPlayer
+      )}\n\nUpdated Scores:\nWinner: ${JSON.stringify(
+        updatedScores.winner
+      )}\nLooser: ${JSON.stringify(updatedScores.looser)}`,
+    });
+
+    // Response to the channel
+    // await context.client.chat.postMessage({
+    //   channel: payload.channel,
+    //   text: `Match finished!\nWinner: ${winnerPlayer.initials}\nLooser: ${looserPlayer.initials}`,
+    //   blocks: [
+    //     {
+    //       type: "section",
+    //       text: {
+    //         type: "mrkdwn",
+    //         text: `Match finished!\nWinner: ${winnerPlayer.initials}\nLooser: ${looserPlayer.initials}`,
+    //       },
+    //     },
+    //     {
+    //       type: "section",
+    //       text: {
+    //         type: "mrkdwn",
+    //         text: `Previous Scores:\nWinner: ${JSON.stringify(
+    //           winnerPlayer
+    //         )}\nLooser: ${JSON.stringify(looserPlayer)}`,
+    //       },
+    //     },
+    //   ],
+    // });
   });
 };
 
