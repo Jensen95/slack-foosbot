@@ -23,6 +23,10 @@ const updatePlayerScore = async (
       },
     });
   }
+  await prismaClientService.db.player.update({
+    where: { id: playerId },
+    data: { updatedAt: new Date() },
+  });
 };
 
 export const createMatch = async (
@@ -138,69 +142,105 @@ const addMatchHandler = (app: SlackApp<SlackAppEnv>) => {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*Elo Scores:*\nWinner: ${
-              winnerPlayer.initials
-            } - ${winnerUpdatedScores.elo.elo.toDecimalPlaces(2).toString()}
-            \nLooser: ${looserPlayer.initials} - ${looserUpdatedScores.elo.elo
-              .toDecimalPlaces(2)
-              .toString()}
-            Winner gained ${winnerUpdatedScores.elo.elo
-              .sub(winnerPlayer.elo[0].elo)
-              .toDecimalPlaces(2)
-              .toString()} points
-            Looser lost ${looserUpdatedScores.elo.elo
-              .sub(looserPlayer.elo[0].elo)
-              .toDecimalPlaces(2)
-              .toString()} points
-            `,
+            text: `*Elo Scores:*`,
           },
         },
         {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*Glicko2 Scores:*\nWinner: ${
+            text: `Winner: ${
+              winnerPlayer.initials
+            } - ${winnerUpdatedScores.elo.elo
+              .toDecimalPlaces(2)
+              .toString()} gained ${winnerUpdatedScores.elo.elo
+              .sub(winnerPlayer.elo[0].elo)
+              .toDecimalPlaces(2)
+              .toString()} points`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Looser: ${
+              looserPlayer.initials
+            } - ${looserUpdatedScores.elo.elo
+              .toDecimalPlaces(2)
+              .toString()} lost ${looserUpdatedScores.elo.elo
+              .sub(looserPlayer.elo[0].elo)
+              .toDecimalPlaces(2)
+              .toString()} points`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*Glicko2 Scores:*`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Winner: ${
               winnerPlayer.initials
             } - ${winnerUpdatedScores.glicko2.rating
               .toDecimalPlaces(2)
-              .toString()}\nLooser: ${
-              looserPlayer.initials
-            } - ${looserUpdatedScores.glicko2.rating
+              .toString()} gained ${winnerUpdatedScores.glicko2.rating
+              .sub(winnerPlayer.glicko2[0].rating)
               .toDecimalPlaces(2)
-              .toString()}
-              Winner gained ${winnerUpdatedScores.glicko2.rating
-                .sub(winnerPlayer.glicko2[0].rating)
-                .toDecimalPlaces(2)
-                .toString()} points
-                Looser lost ${looserUpdatedScores.glicko2.rating
-                  .sub(looserPlayer.glicko2[0].rating)
-                  .toDecimalPlaces(2)
-                  .toString()} points
-              `,
+              .toString()} points`,
           },
         },
         {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*TrueSkill Scores:*\nWinner: ${
+            text: `Looser: ${
+              looserPlayer.initials
+            } - ${looserUpdatedScores.glicko2.rating
+              .toDecimalPlaces(2)
+              .toString()} lost ${looserUpdatedScores.glicko2.rating
+              .sub(looserPlayer.glicko2[0].rating)
+              .toDecimalPlaces(2)
+              .toString()} points`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*TrueSkill Scores:*`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Winner: ${
               winnerPlayer.initials
             } - ${winnerUpdatedScores.trueSkill.mu
               .toDecimalPlaces(2)
-              .toString()}\nLooser: ${
+              .toString()} gained ${winnerUpdatedScores.trueSkill.mu
+              .sub(winnerPlayer.trueSkill[0].mu)
+              .toDecimalPlaces(2)
+              .toString()} points`,
+          },
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Looser: ${
               looserPlayer.initials
             } - ${looserUpdatedScores.trueSkill.mu
               .toDecimalPlaces(2)
-              .toString()}
-            Winner gained ${winnerUpdatedScores.trueSkill.mu
-              .sub(winnerPlayer.trueSkill[0].mu)
+              .toString()} lost ${looserUpdatedScores.trueSkill.mu
+              .sub(looserPlayer.trueSkill[0].mu)
               .toDecimalPlaces(2)
-              .toString()} points
-              Looser lost ${looserUpdatedScores.trueSkill.mu
-                .sub(looserPlayer.trueSkill[0].mu)
-                .toDecimalPlaces(2)
-                .toString()} points
-              `,
+              .toString()} points`,
           },
         },
       ],

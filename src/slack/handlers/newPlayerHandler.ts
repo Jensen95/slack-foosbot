@@ -70,16 +70,11 @@ const addNewPlayerHandler = (app: SlackApp<SlackAppEnv>) => {
     const [_, player] = playerInitials;
 
     await createNewPlayer(player, payload.channel);
-    // TODO: Add response to user
     await context.client.chat.postEphemeral({
       channel: payload.channel,
       user: payload.user!,
       text: `Player ${player} created`,
     });
-    // await context.client.chat.postMessage({
-    //   channel: payload.channel,
-    //   text: `Player ${player} created`,
-    // });
   });
 };
 
