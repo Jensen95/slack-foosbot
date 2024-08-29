@@ -4,7 +4,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240821.1",
     "prisma": "^5.17.0",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "vitest": "^2.0.3",
     "vitest-mock-extended": "^2.0.2",
     "wrangler": "3.64.0"
