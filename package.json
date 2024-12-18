@@ -19,7 +19,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@prisma/adapter-d1": "^5.20.0",
+    "@prisma/adapter-d1": "^6.1.0",
     "@prisma/client": "^5.21.1",
     "chanfana": "^2.0.4",
     "glicko2": "^1.2.1",
